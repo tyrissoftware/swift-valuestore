@@ -18,7 +18,7 @@ pipeline {
 
         stage('Coverage') {
             steps {
-                sh "xcrun llvm-cov show -output-dir=output -format=html -instr-profile=\$(find .build -name default.profdata) \$(find .build -name ValueStorePackageTests)"
+                sh "xcrun llvm-cov show -output-dir=output -format=html -instr-profile=\$(find .build -name default.profdata) \$(find .build -name swift-valuestorePackageTests)"
             }
             post {
                 success {
