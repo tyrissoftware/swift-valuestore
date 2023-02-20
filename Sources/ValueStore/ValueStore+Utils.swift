@@ -99,3 +99,15 @@ extension ValueStore {
 		}
 	}
 }
+
+extension ValueStore {
+	public func load(default value: Value, environment: Environment) async -> Value {
+		(try? await self.load(environment)) ?? value
+	}
+}
+
+extension ValueStore where Environment == Void {
+	public func load(default value: Value) async -> Value {
+		(try? await self.load(())) ?? value
+	}
+}
