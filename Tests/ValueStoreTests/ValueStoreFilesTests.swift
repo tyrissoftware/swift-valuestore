@@ -5,7 +5,7 @@ import ValueStore
 class ValueStoreFilesTests: XCTestCase {
 	func testFile() async throws {
 		let tmpPath = FileManager.default.temporaryDirectory
-		let url = tmpPath.appendingPathExtension("testFile")
+		let url = tmpPath.appendingPathComponent("testFile")
 		
 		let store = ValueStore.file(url).coded(Codec.utf8)
 		
@@ -18,7 +18,7 @@ class ValueStoreFilesTests: XCTestCase {
 		}
 		
 		let tmpPath = FileManager.default.temporaryDirectory
-		let url = tmpPath.appendingPathExtension("testJSONFile")
+		let url = tmpPath.appendingPathComponent("testJSONFile")
 		
 		let store = ValueStore<Void, User>.jsonFile(url)
 		
