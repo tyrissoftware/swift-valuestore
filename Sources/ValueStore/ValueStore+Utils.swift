@@ -34,7 +34,6 @@ extension ValueStore where Environment == Void {
 	}
 }
 
-
 public struct Conversion<Input, Output> {
 	public var to: (Input) -> Output
 	public var from: (Output) -> Input
