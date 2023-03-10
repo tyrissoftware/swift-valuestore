@@ -24,7 +24,7 @@ Simple utility to save or remove a value using an optional. If the value is nil 
 
 Accepts a Codec so that we can transform the Value we store into a NewValue.
 
-## represented(by:)
+## representing(by:)
 
 Accepts a type that conforms to RawRepresentable. Converts a ValueStore<_, RawValue> to a ValueStore<_, RawRepresentable>.
 

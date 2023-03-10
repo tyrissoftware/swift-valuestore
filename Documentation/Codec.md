@@ -26,7 +26,7 @@ Conversion between String and Data, using utf8 encoding.
 
 Conversion between URL and String. Uses absoluteString in one direction and tries to create a URL from a string in the other one.
 
-### represented
+### representing
 
 Conversion between a RawRepresentable and its RawValue.
 

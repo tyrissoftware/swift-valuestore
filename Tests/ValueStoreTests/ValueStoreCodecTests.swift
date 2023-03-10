@@ -11,7 +11,7 @@ enum StringEnum: String {
 class ValueStoreCodecTests: XCTestCase {
 	func testRepresented() async throws {
 		let ref = Ref<String>()
-		let store = ref.valueStore.represented(by: StringEnum.self)
+		let store = ref.valueStore.representing(by: StringEnum.self)
 		
 		let saved = try await store.save(.one)
 		let loaded = try await store.load()
@@ -22,7 +22,7 @@ class ValueStoreCodecTests: XCTestCase {
 	
 	func testRepresentedInvalid() async throws {
 		let ref = Ref<String>("blah")
-		let store = ref.valueStore.represented(by: StringEnum.self)
+		let store = ref.valueStore.representing(by: StringEnum.self)
 		
 		do {
 			let value = try await store.load()

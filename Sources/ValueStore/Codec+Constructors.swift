@@ -21,7 +21,7 @@ extension Codec where Input == URL, Output == String {
 }
 
 extension Codec where Input: RawRepresentable, Input.RawValue == Output {
-	public static var represented: Self {
+	public static var representing: Self {
 		.init {
 			$0.rawValue
 		} from: {

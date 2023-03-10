@@ -15,8 +15,8 @@ extension ValueStore {
 
 extension ValueStore {
 	@inlinable
-	public func represented<NewValue>(by: NewValue.Type) -> ValueStore<Environment, NewValue>
+	public func representing<NewValue>(by: NewValue.Type) -> ValueStore<Environment, NewValue>
 	where NewValue: RawRepresentable, NewValue.RawValue == Value {
-		self.coded(.represented)
+		self.coded(.representing)
 	}
 }
