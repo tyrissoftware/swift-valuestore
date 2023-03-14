@@ -55,16 +55,3 @@ extension ValueStore {
 		}
 	}
 }
-
-extension ValueStore {
-	@inlinable
-	public func coded<NewValue>(
-		_ codec: Codec<NewValue, Value>
-	) -> ValueStore<Environment, NewValue> {
-		self.process { newValue in
-			try codec.to(newValue)
-		} postprocess: { value in
-			try codec.from(value)
-		}
-	}
-}
