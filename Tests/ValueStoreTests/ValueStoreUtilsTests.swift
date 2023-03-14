@@ -105,4 +105,16 @@ class ValueStoreUtilsTests: XCTestCase {
 		let afterRemove = await store.load(default: 1)
 		XCTAssertEqual(afterRemove, 1)
 	}
+	
+	func testLoadDefaultEnvironment() async throws {
+		let store = Ref<Int>(42).valueStore
+		
+		let result = await store.load(default: 1, environment: ())
+		XCTAssertEqual(result, 42)
+		
+		try await store.remove()
+		
+		let afterRemove = await store.load(default: 1, environment: ())
+		XCTAssertEqual(afterRemove, 1)
+	}
 }
