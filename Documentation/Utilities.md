@@ -16,6 +16,10 @@ Use this for migrating from one ValueStore to another one. It tries to load from
 
 You can cache one ValueStore with another one that you know is faster. This gives you a ValueStore that will try to load first from the fast store, and if it doesn’t find the value there it will load from the slow one.
 
+## cached(load:)
+
+You can cache one operation with same value. This will try to load the value first from ValueStore, if it doesn’t find, try to do the operation and save the value in ValueStore.
+
 ## set
 
 Simple utility to save or remove a value using an optional. If the value is nil the stored value will be removed, and if there’s some value it will be stored.
