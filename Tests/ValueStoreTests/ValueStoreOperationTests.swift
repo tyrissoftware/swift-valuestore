@@ -46,15 +46,13 @@ class ValueStoreOperationTests: XCTestCase {
 	
 	func testCached() async throws {
 		let store = Ref<Int?>(7).valueStore
-		let firstOperation = { 1 }
 		
-		let valueCached = try await store.cached(load: firstOperation)
+        let valueCached = try await store.cached { 1 }
 		XCTAssertEqual(valueCached, 7)
 		
 		try await store.remove()
-		let secondOperation = { 11 }
 		
-		let valueNotCached = try await store.cached(load: secondOperation)
+        let valueNotCached = try await store.cached { 11 }
 		XCTAssertEqual(valueNotCached, 11)
 
 	}

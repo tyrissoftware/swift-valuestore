@@ -18,7 +18,7 @@ You can cache one ValueStore with another one that you know is faster. This give
 
 ## cached(load:)
 
-You can cache one operation with same value. This will try to load the value first from ValueStore, if it doesn’t find, try to do the operation and save the value in ValueStore.
+Performs a load cached by the current ValueStore. This will try to load the value first from the current ValueStore, and if it doesn’t find it, tries to load it using the function parameter and then save the value in the ValueStore.
 
 ## set
 
