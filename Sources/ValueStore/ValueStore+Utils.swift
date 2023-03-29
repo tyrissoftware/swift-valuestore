@@ -16,7 +16,7 @@ extension ValueStore {
 	
 	public func update(
 		environment: Environment,
-		_ modify: @escaping (inout Value) -> Void		
+		_ modify: @escaping (inout Value) -> Void
 	) async throws -> Value {
 		var value = try await self.load(environment)
 		modify(&value)
@@ -108,5 +108,34 @@ extension ValueStore {
 extension ValueStore where Environment == Void {
 	public func load(default value: Value) async -> Value {
 		(try? await self.load(())) ?? value
+	}
+}
+
+
+public extension ValueStore where Environment == Void {
+	func cached(
+		load: @escaping () async throws -> Value
+	) async throws -> Value {
+		try await self.cached(
+			load: load,
+			environment: ()
+		)
+	}
+}
+
+public extension ValueStore {
+	func cached(
+		load: @escaping (Environment) async throws -> Value,
+		environment: Environment
+	) async throws -> Value {
+		let value: Value
+		
+		do {
+			value = try await self.load(environment)
+		} catch {
+			value = try await load(environment)
+		}
+		
+		return try await self.save(value, environment)
 	}
 }
