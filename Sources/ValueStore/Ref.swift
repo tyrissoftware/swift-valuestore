@@ -1,6 +1,6 @@
 import Foundation
 
-public final class Ref<Value> {
+public actor Ref<Value> {
 	public var value: Value?
 	
 	public init(
@@ -8,17 +8,21 @@ public final class Ref<Value> {
 	) {
 		self.value = value
 	}
+	
+	public func change(to value: Value?) {
+		self.value = value
+	}
 }
 
 extension Ref {
-	public var valueStore: ValueStore<Void, Value> {
+	nonisolated public var valueStore: ValueStore<Void, Value> {
 		ValueStore { _ in
-			try isPresent(self.value, or: ValueStoreError.noData)
+			try await isPresent(self.value, or: ValueStoreError.noData)
 		} save: { value, _ in
-			self.value = value
+			await self.change(to: value)
 			return value
 		} remove: { _ in
-			self.value = nil
+			await self.change(to: nil)
 		}
 	}
 }

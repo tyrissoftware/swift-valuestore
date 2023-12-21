@@ -71,4 +71,18 @@ class CodecTests: XCTestCase {
 		
 		XCTAssertEqual(john, recovered)
 	}
+	
+	func testReversed() throws {
+		struct User: Equatable, Codable {
+			var name: String
+		}
+		
+		let codec = Codec<User, Data>.json.reversed()
+		
+		let john = User(name: "John")
+		
+		let data = try JSONEncoder().encode(john)
+		
+		try codec.testCycle(data)
+	}
 }

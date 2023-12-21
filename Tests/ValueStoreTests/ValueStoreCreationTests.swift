@@ -69,16 +69,24 @@ class ValueStoreCreationTests: XCTestCase {
 		let fromOld = try await store.load()
 		
 		XCTAssertEqual(fromOld, 7)
-		XCTAssertEqual(oldRef.value, nil)
+		
+		var value = await oldRef.value
+		
+		XCTAssertEqual(value, nil)
 		
 		_ = try await store.save(42)
-		XCTAssertEqual(oldRef.value, nil)
+		
+		value = await oldRef.value
+		
+		XCTAssertEqual(value, nil)
 		
 		let saved = try await store.load()
 		XCTAssertEqual(saved, 42)
 		
 		try await store.remove()
-		XCTAssertEqual(oldRef.value, nil)
+		
+		value = await oldRef.value
+		XCTAssertEqual(value, nil)
 		
 		let afterRemove = try? await store.load()
 		XCTAssertEqual(afterRemove, nil)
@@ -90,7 +98,9 @@ class ValueStoreCreationTests: XCTestCase {
 		let store = Ref<Int?>().valueStore.replacing(old)
 		
 		try await store.remove()
-		XCTAssertEqual(oldRef.value, nil)
+		
+		let value = await oldRef.value
+		XCTAssertEqual(value, nil)
 
 		let afterRemove = try? await store.load()
 		XCTAssertEqual(afterRemove, nil)
