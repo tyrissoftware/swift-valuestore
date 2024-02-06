@@ -13,91 +13,199 @@
 
 ## Motivation
 
-UserDefaults are very useful and easy to use, however, they have many issues and shortcomings that are usually not discussed. You shouldn’t use them directly in your code if you want testability, type safety and to allow these values to be stored in different places.
+UserDefaults or Keychain are very useful and easy to use, however, they have many issues and shortcomings that are usually not discussed. You shouldn’t use them directly in your code if you want testability, type safety and to allow these values to be stored in different places.
 
 This library provides a type: ValueStore, which allows to store your values into the UserDefaults, memory, the file system or any other final storage, while abstracting the usage from the specific implementation you want to use in your live environment.
 
+### Features
+**Type Safety**: Ensure that values are stored and retrieved in a consistent and safe manner, reducing runtime errors and improving code quality.
+**Abstraction Layer**: Abstract away the details of underlying storage mechanisms, allowing for easy swapping or modification of storage solutions without affecting the rest of your code.
+**Flexibility**: Store values in UserDefaults, memory, file system, or any custom storage solution of your choice.
+**Testability**: Designed with testability in mind, making it easier to write unit tests for code that involves value storage.
+**Ease of Use**: Simple and intuitive API that integrates seamlessly with your Swift projects.
 
 ## Getting Started
 
-To use the library you define a struct to hold all the persisted values:
-
-```swift
-struct PersistenceEnvironment {
-	var userPreference1: ValueStore<Void, String>
-	var userPreference2: ValueStore<Void, Int>
-	var networkPreference: ValueStore<NetworkEnvironment, String>
+The Persistence structure is a core component of swift-valuestore, is where we store the multiple ValueStore instances, each responsible for handling a specific type of data in your application. Here is an overview of how to set up and use the Persistence structure:
+```swift 
+public struct Persistence {
+    public var settings: ValueStore<Void, Settings>
+    public var userAuth: ValueStore<Void, UserAuth>
+    public var language: ValueStore<Void, String>
 }
 ```
 
-Now we should create an enum to hold all the keys to be used with UserDefaults:
+In this persistance struct we are going to store a closures that resolves all the persistance operations of the property. In this case Settings, UserAuth and String.
+
+Using this struct we can now create the live instance to be used in production.
 
 ```swift
-enum UserDefaultsKey: String {
-	case userPreference1
-	case userPreference2
-}
-```
-
-This way the compiler will ensure that all keys are unique. Now we need to create a constructor that will use this key:
-
-```swift
-extension ValueStore {
-    static func userDefaults(_ key: UserDefaultsKey) -> Self {
-        .unsafeRawUserDefaults(key.rawValue)
-    }
-}
-```
-
-You can also have other implementations that store the value using an endpoint, the keychain or whatever:
-
-```swift
-extension ValueStore where Environment == NetworkEnvironment {
-    static func network(_ endpoint: String) -> Self {
+extension Persistence {
+    public static func live() -> Self {
         .init(
-            load: { networkEnvironment in
-                try await get(...)
-            },
-            save: { value, networkEnvironment in 
-                try await post(...)
-            },
-            remove: { networkEnvironment in 
-                try await delete(...)
-            }
+            settings: .userDefaults(.settings),
+            userAuth: .keychain(.userAuth),
+            language: .userDefaults(.language)
         )
     }
 }
 ```
 
-Now we can create a live version of our PersistenceEnvironment: 
+In this extension, we define a static method **live()** that returns an instance of Persistence. This instance is initialized with specific ValueStore types for different data categories. We use **.userDefaults** and **.keychain** to specify the storage mechanism for each type of data:
+
+For each ValueStore, we pass an associated enum value that represents the key for storing that particular piece of data. For example:
+
+### Storing in UsersDefault
+Let's implement the settings and the language storing in the UserDefaults. This use case is the most simpler for what the library was created. To do it, we need a enum to define the keys and we need to create our ValueStore. To invoque this value store we will use the **static func userDefaults**. 
 
 ```swift
-extension PersistenceEnvironment {
-	static var live: Self {
+public enum UserDefaultsKey: String {
+	case settings
+    case language
+}
+
+extension ValueStore where Value: Codable {
+	public static func userDefaults(
+		_ key: UserDefaultsKey
+	) -> ValueStore<Environment, Value> {
+		ValueStore.unsafeJSONUserDefaults(key.rawValue)
+	}
+}
+```
+That's it with the following code the live instance will work for the keys settings and language.
+
+The ValueStore unsafeJSONUserDefaults it's defined in our library and you can use it to store in users defaults in JSON format. For this reason we don't need to do nothing more. 
+
+Why store at users default in a JSON format? That's a good question. Its because by default the types that UsersDefaults supports are restricted to a few system types (URL not included). For this reason we encourage you to use **unsafeJSONUserDefaults**. But if you want to store values in the native format you can do it using the ValueStore compatible with it, furthermore, we typed the system types compatible with the Value Store to avoid any error using it. If you want to use it, you only need to call to **unsafeRawUserDefaults** insted and build a value store with one of the compatible types. (Check types at ValueStore+UserDefaults.swift).
+
+### Storing in keychain
+
+Again, we need to start defining our keys for the new ValueStore.
+
+```swift
+public enum KeychainKey: String {
+    case userAuth
+}
+```
+
+We also define an extension for ValueStore where Value is Codable, to create a keychain storage type. This extension leverages encoding in UTF8 and JSON formats, utilizing methods provided by the ValueStore library.
+
+```swift
+public extension ValueStore where Value: Codable {
+    static func keychain(
+        _ key: KeychainKey,
+        prefix: String = ""
+    ) -> ValueStore<Void, Value> {
+        ValueStore<Void, String>.keychain(key, prefix: prefix)
+            .coded(Codec.utf8.reversed())
+            .coded(Codec.json)
+    }
+}
+
+```
+This method allows storing Codable objects in the keychain, ensuring data is securely saved and retrieved.
+Finally, we implement the functionality for interacting with the keychain. We use the **Valet library** to manage keychain operations, defining methods for loading, saving, and removing data associated with specific keys.
+
+```swift 
+import Valet
+import ValueStore
+
+public extension ValueStore where Value == String {
+    private static var valet: Valet {
+        Valet.valet(with: Identifier(nonEmpty: "User")!, accessibility: .whenUnlocked)
+    }
+    
+    private static func valetKey(
+        _ key: KeychainKey,
+        _ prefix: String = ""
+    ) -> String {
+        "\(prefix)\(key)"
+    }
+    
+    static func keychain(
+        _ key: KeychainKey,
+        prefix: String = ""
+    ) -> ValueStore<Void, Value> {
+        .init(
+            load: { _ in
+                guard
+                    let value = self.valet.string(forKey: valetKey(key, prefix))
+                else {
+                    throw(ValueStoreError.noData)
+                }
+                
+                return value
+            },
+            save: { value, _ in
+                self.valet.set(
+                    string: value,
+                    forKey: valetKey(key, prefix)
+                )
+                
+                return value
+            },
+            remove: {
+                self.valet.removeObject(forKey: valetKey(key, prefix))
+            }
+        )
+    }
+}
+```
+In this extension, we define a private Valet instance for secure storage and methods for creating keychain keys. The keychain method provides a ValueStore specifically for keychain operations, handling loading, saving, and removing string values securely.
+
+### Mocking the Persistance and the ValueStores
+We can create another instance of the Persistance struct to the testing or preview environment like that
+```swift
+extension Persistence {
+	public static var mock: Self {
 		.init(
-			userPreference1: .userDefaults(.userPreference1),
-			userPreference2: .userDefaults(.userPreference2), 
-			networkPreference: .network(“preference”)
+			settings: .const(Settings.mock()),
+			userAuth: ValueStore<Void, UserAuth>.const(
+				UserAuth.mock()
+			),
+            language: .const("es")
 		)
 	}
 }
 ```
 
+- The const constructor will return a ValueStore that will be constant, no changes will be perform in the ValueStore created using the .const constructor (Defined in ValueStore+Creation.swift)
+- Settings.mock() and UserAuth.mock() will turn back a instance for mock environment of this structs.
+
+That's it, with this we have a Persistence instance that will turn back the desired mocked data that we defined.
+
+### Using the Value Stores
 Finally you can use these stores to read and write your values:
 
 ```swift
-let environment = PersistenceEnvironment.live
+let persistance = Persistance.live
 
-var storedPreference1 = try await environment.userPreference1.load()
-storedPreference1 += “!”
-try await environment.userPreference1.save(storedPreference1)
+var lang = try await persistance.language.load()
+lang = “es”
+try await environment.language.save(lang)
 ```
 
 Check the documentation or the tests for a better understanding on how to use it, and all the utilities that come with ValueStore.
 
-## Documentation
+### Documentation
 
 The documentation can be found in the "Documentation" folder.
+
+- [**Codec**](Documentation/Codec.md): This page will explain you how the codec works, used for the transformation between the aplication typed value and the stored format value.
+
+- [**Constructors**](Documentation/Constructors.md): A more detailed explanation about how to construct diferent kind of ValueStores.
+
+- [**Files**](Documentation/Constructors.md): You can store the data into a file instead of at UsersDefault.
+
+- [**User Defaults**](Documentation/UserDefaults.md): You can store the data into a file instead of at UsersDefault.
+
+- [**Utilities**](Documentation/Utilities.md): A bunch of methods useful to handle your ValueStores.
+
+- [**Testing**](Documentation/Testing.md): Good practices to test instances that requieres ValueStores.
+
+
+
+
 
 ## License
 
