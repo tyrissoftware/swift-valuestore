@@ -87,18 +87,3 @@ private struct MovieDto: Codable {
     var title: String
     var description: String
 }
-
-private extension MovieDto {
-}
-
-private enum UserDefaultsKey: String {
-    case movieCache
-}
-
-fileprivate extension ValueStore where Value: Codable {
-    static func userDefaults(
-        _ key: UserDefaultsKey
-    ) -> ValueStore<Environment, Value> {
-        ValueStore.unsafeJSONUserDefaults(key.rawValue)
-    }
-}
