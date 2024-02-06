@@ -26,7 +26,7 @@ This library provides a type: ValueStore, which allows to store your values into
 
 ## Getting Started
 
-The Persistence structure is a core component of swift-valuestore, is where we store the multiple ValueStore instances, each responsible for handling a specific type of data in your application. Here is an overview of how to set up and use the Persistence structure:
+The Persistence structure will serve as the storage location for our ValueStores, is where we store the multiple ValueStore instances, each responsible for handling a specific type of data in your application. Here is an overview of how to set up and use the Persistence structure:
 ```swift 
 public struct Persistence {
     public var settings: ValueStore<Void, Settings>
