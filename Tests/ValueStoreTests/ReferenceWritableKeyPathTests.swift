@@ -2,7 +2,7 @@ import Foundation
 import XCTest
 import ValueStore
 
-class Reference {
+fileprivate class Reference {
 	var value: Int?
 	init(value: Int? = nil) {
 		self.value = value

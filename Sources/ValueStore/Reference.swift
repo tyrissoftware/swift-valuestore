@@ -1,6 +1,9 @@
 import Foundation
 
-public final class Ref<Value> {
+@available(*, deprecated, message: "Use Reference<Value> instead")
+public typealias Ref<Value> = Reference<Value>
+
+public final class Reference<Value> {
 	public var value: Value?
 	
 	public init(
@@ -10,7 +13,7 @@ public final class Ref<Value> {
 	}
 }
 
-extension Ref {
+extension Reference {
 	public var valueStore: ValueStore<Void, Value> {
 		ValueStore { _ in
 			try isPresent(self.value, or: ValueStoreError.noData)
