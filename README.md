@@ -13,7 +13,7 @@
 
 ## Motivation
 
-UserDefaults or Keychain are very useful and easy to use, however, they have many issues and shortcomings that are usually not discussed. You shouldn’t use them directly in your code if you want testability, type safety and to allow these values to be stored in different places.
+UserDefaults are very useful and easy to use, however, they have many issues and shortcomings that are usually not discussed. You shouldn’t use them directly in your code if you want testability, type safety and to allow these values to be stored in different places.
 
 This library provides a type: ValueStore, which allows to store your values into the UserDefaults, memory, the file system or any other final storage, while abstracting the usage from the specific implementation you want to use in your live environment.
 
@@ -26,7 +26,7 @@ This library provides a type: ValueStore, which allows to store your values into
 
 ## Getting Started
 
-The Persistence structure will serve as the storage location for our ValueStores, is where we store the multiple ValueStore instances, each responsible for handling a specific type of data in your application. Here is an overview of how to set up and use the Persistence structure:
+The recommended way to use the library is to define a Persistence struct, is where we store the multiple ValueStore instances, each responsible for handling a specific type of data in your application. Here is an overview of how to set up and use the Persistence structure:
 ```swift 
 public struct Persistence {
     public var settings: ValueStore<Void, Settings>
@@ -35,7 +35,7 @@ public struct Persistence {
 }
 ```
 
-In this persistance struct we are going to store a closures that resolves all the persistance operations of the property. In this case Settings, UserAuth and String.
+In this persistence struct we are going to store an implementation that resolves all the persistence operations of the property.
 
 Using this struct we can now create the live instance to be used in production.
 
