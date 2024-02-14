@@ -4,12 +4,12 @@ import ValueStore
 
 class ValueStoreTests: XCTestCase {
 	func testRef() async throws {
-		let ref = Ref<Int?>()
+		let ref = Reference<Int?>()
 		try await ref.valueStore.testCycle(7)
 	}
 	
 	func testOptionalSet() async throws {
-		let ref = Ref<Int?>()
+		let ref = Reference<Int?>()
 		let store = ref.valueStore
 		
 		try await store.set(42)

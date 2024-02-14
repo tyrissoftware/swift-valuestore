@@ -41,7 +41,7 @@ class ValueStoreEnvironmentTests: XCTestCase {
 	}
 	
 	func testRequire() async throws {
-		let store = Ref<Int>(nil).valueStore.require(String.self)
+		let store = Reference<Int>(nil).valueStore.require(String.self)
 		
 		try await store.provide("ignored").testCycle(42)
 	}

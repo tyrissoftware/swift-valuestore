@@ -4,7 +4,7 @@ import ValueStore
 
 class ValueStoreUtilsTests: XCTestCase {
 	func testDefault() async throws {
-		let store = Ref<Int>().valueStore.default(42)
+		let store = Reference<Int>().valueStore.default(42)
 		
 		let result = try await store.load()
 		XCTAssertEqual(result, 42)
@@ -22,7 +22,7 @@ class ValueStoreUtilsTests: XCTestCase {
 	}
 	
 	func testUpdate() async throws {
-		let store = Ref<Int>(7).valueStore
+		let store = Reference<Int>(7).valueStore
 
 		let updated = try await store.update { value in
 			value *= 2
@@ -46,7 +46,7 @@ class ValueStoreUtilsTests: XCTestCase {
 			from: { $0 == 0 ? false : true }
 		)
 		
-		let store = Ref<Int>(7).valueStore.map(conversion)
+		let store = Reference<Int>(7).valueStore.map(conversion)
 		
 		let initial = try await store.load()
 		XCTAssertEqual(initial, true)
@@ -95,7 +95,7 @@ class ValueStoreUtilsTests: XCTestCase {
 	}
 	
 	func testLoadDefault() async throws {
-		let store = Ref<Int>(42).valueStore
+		let store = Reference<Int>(42).valueStore
 		
 		let result = await store.load(default: 1)
 		XCTAssertEqual(result, 42)
@@ -107,7 +107,7 @@ class ValueStoreUtilsTests: XCTestCase {
 	}
 	
 	func testLoadDefaultEnvironment() async throws {
-		let store = Ref<Int>(42).valueStore
+		let store = Reference<Int>(42).valueStore
 		
 		let result = await store.load(default: 1, environment: ())
 		XCTAssertEqual(result, 42)

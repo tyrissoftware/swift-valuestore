@@ -4,8 +4,8 @@ import ValueStore
 
 class ValueStoreOperationTests: XCTestCase {
     func testCopy() async throws {
-        let source = Ref<Int?>(7).valueStore
-        let target = Ref<Int?>().valueStore
+        let source = Reference<Int?>(7).valueStore
+        let target = Reference<Int?>().valueStore
         
         let copied = try await source.copy(to: target)
         XCTAssertEqual(copied, 7)
@@ -18,8 +18,8 @@ class ValueStoreOperationTests: XCTestCase {
     }
     
     func testMove() async throws {
-        let source = Ref<Int?>(7).valueStore
-        let target = Ref<Int?>().valueStore
+        let source = Reference<Int?>(7).valueStore
+        let target = Reference<Int?>().valueStore
         
         let copied = try await source.move(to: target)
         XCTAssertEqual(copied, 7)
@@ -32,8 +32,8 @@ class ValueStoreOperationTests: XCTestCase {
     }
     
     func testCache() async throws {
-        let slow = Ref<Int?>(7).valueStore
-        let fast = Ref<Int?>(1).valueStore
+        let slow = Reference<Int?>(7).valueStore
+        let fast = Reference<Int?>(1).valueStore
         
         let store = slow.cached(by: fast)
         
@@ -45,7 +45,7 @@ class ValueStoreOperationTests: XCTestCase {
     }
     
     func testCached() async throws {
-        let store = Ref<Int?>(7).valueStore
+        let store = Reference<Int?>(7).valueStore
         
         let valueCached = try await store.cached(load: { 1 }, environment: ())
         XCTAssertEqual(valueCached, 7)
