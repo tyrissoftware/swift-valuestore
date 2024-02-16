@@ -1,7 +1,6 @@
 # Reference for wrapping a Value Store
 The Reference is a powerful feature designed mainly for testing or mocking purposes. It facilitates a convenient way to **store a ValueStore in memory**, enabling developers to test their code in isolation from persistent storage mechanisms like UserDefaults. By utilizing in-memory storage, tests can be **performed without side effects**, ensuring a clean state before and after test runs.
 
-
 ## Testing example
 The following test case shows how to move a value from a source store to a target store, to test it easy we are going to use the Reference. Instead of use the UsersDefaults as a value storing place. With the Reference we can get a ValueStore with the same result type than our Production-like instance, so we can pass as a dependency to the instances that requieres to test it with the in-memory storage, instead of using the real one.
 
