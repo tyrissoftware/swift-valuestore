@@ -125,7 +125,7 @@ The documentation can be found in the "Documentation" folder.
 
 - [**Utilities**](Documentation/Utilities.md): A bunch of methods useful to handle your ValueStores.
 
-- [**Testing**](Documentation/Testing.md): Good practices to test instances that requieres ValueStores.
+- [**Reference**](Documentation/Reference.md): Good practices about how to mock a ValueStore for testing or mocking purpuses
 
 ### Code examples
 
