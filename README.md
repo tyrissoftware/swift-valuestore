@@ -26,11 +26,10 @@ This library provides a type: ValueStore, which allows to store your values into
 
 ## Getting Started
 
-The recommended way to use the library is to define a Persistence struct, is where we store the multiple ValueStore instances, each responsible for handling a specific type of data in your application. Here is an overview of how to set up and use the Persistence structure:
+The recommended way to use the library is to define a **Persistence struct**, is where we store the multiple ValueStore instances, each responsible for handling a specific type of data in your application. Here is an overview of how to set up and use the Persistence structure:
 ```swift 
 public struct Persistence {
     public var settings: ValueStore<Void, Settings>
-    public var userAuth: ValueStore<Void, UserAuth>
     public var language: ValueStore<Void, String>
 }
 ```
@@ -44,14 +43,13 @@ extension Persistence {
     public static func live() -> Self {
         .init(
             settings: .userDefaults(.settings),
-            userAuth: .keychain(.userAuth),
             language: .userDefaults(.language)
         )
     }
 }
 ```
 
-In this extension, we define a static method **live()** that returns an instance of Persistence. This instance is initialized with specific ValueStore types for different data categories. We use **.userDefaults** and **.keychain** to specify the storage mechanism for each type of data:
+In this extension, we define a static method **live()** that returns an instance of Persistence. This instance is initialized with specific ValueStore types for different data categories. We use **.userDefaults** to specify the storage mechanism for each type of data:
 
 For each ValueStore, we pass an associated enum value that represents the key for storing that particular piece of data. For example:
 
@@ -78,83 +76,9 @@ The ValueStore unsafeJSONUserDefaults it's defined in our library and you can us
 
 Why store at users default in a JSON format? That's a good question. Its because by default the types that UsersDefaults supports are restricted to a few system types (URL not included). For this reason we encourage you to use **unsafeJSONUserDefaults**. But if you want to store values in the native format you can do it using the ValueStore compatible with it, furthermore, we typed the system types compatible with the Value Store to avoid any error using it. If you want to use it, you only need to call to **unsafeRawUserDefaults** insted and build a value store with one of the compatible types. (Check types at ValueStore+UserDefaults.swift).
 
-### Storing in keychain
-
-Again, we need to start defining our keys for the new ValueStore.
-
-```swift
-public enum KeychainKey: String {
-    case userAuth
-}
-```
-
-We also define an extension for ValueStore where Value is Codable, to create a keychain storage type. This extension leverages encoding in UTF8 and JSON formats, utilizing methods provided by the ValueStore library.
-
-```swift
-public extension ValueStore where Value: Codable {
-    static func keychain(
-        _ key: KeychainKey,
-        prefix: String = ""
-    ) -> ValueStore<Void, Value> {
-        ValueStore<Void, String>.keychain(key, prefix: prefix)
-            .coded(Codec.utf8.reversed())
-            .coded(Codec.json)
-    }
-}
-
-```
-This method allows storing Codable objects in the keychain, ensuring data is securely saved and retrieved.
-Finally, we implement the functionality for interacting with the keychain. We use the **Valet library** to manage keychain operations, defining methods for loading, saving, and removing data associated with specific keys.
-
-```swift 
-import Valet
-import ValueStore
-
-public extension ValueStore where Value == String {
-    private static var valet: Valet {
-        Valet.valet(with: Identifier(nonEmpty: "User")!, accessibility: .whenUnlocked)
-    }
-    
-    private static func valetKey(
-        _ key: KeychainKey,
-        _ prefix: String = ""
-    ) -> String {
-        "\(prefix)\(key)"
-    }
-    
-    static func keychain(
-        _ key: KeychainKey,
-        prefix: String = ""
-    ) -> ValueStore<Void, Value> {
-        .init(
-            load: { _ in
-                guard
-                    let value = self.valet.string(forKey: valetKey(key, prefix))
-                else {
-                    throw(ValueStoreError.noData)
-                }
-                
-                return value
-            },
-            save: { value, _ in
-                self.valet.set(
-                    string: value,
-                    forKey: valetKey(key, prefix)
-                )
-                
-                return value
-            },
-            remove: {
-                self.valet.removeObject(forKey: valetKey(key, prefix))
-            }
-        )
-    }
-}
-```
-In this extension, we define a private Valet instance for secure storage and methods for creating keychain keys. The keychain method provides a ValueStore specifically for keychain operations, handling loading, saving, and removing string values securely.
-
 ### Mocking the Persistance and the ValueStores
 We can create another instance of the Persistance struct to the testing or preview environment like that
+
 ```swift
 extension Persistence {
 	public static var mock: Self {
@@ -178,9 +102,9 @@ That's it, with this we have a Persistence instance that will turn back the desi
 Finally you can use these stores to read and write your values:
 
 ```swift
-let persistance = Persistance.live
+let environment = Persistance.live
 
-var lang = try await persistance.language.load()
+var lang = try await environment.language.load()
 lang = “es”
 try await environment.language.save(lang)
 ```
@@ -203,9 +127,11 @@ The documentation can be found in the "Documentation" folder.
 
 - [**Testing**](Documentation/Testing.md): Good practices to test instances that requieres ValueStores.
 
+### Code examples
 
+Explore the code examples located in the folder Sources/Examples to gain inspiration on leveraging the ValueStore library for various purposes.
 
-
+- [**Keychain with Valet integration**](Sources/Examples/Keychain-Example.md): A code example of how to use ValueStore to connect with the keychain using the Valet library.
 
 ## License
 
