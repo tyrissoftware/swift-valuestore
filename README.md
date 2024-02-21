@@ -53,19 +53,19 @@ You can also have other implementations that store the value using an endpoint, 
 
 ```swift
 extension ValueStore where Environment == NetworkEnvironment {
-    static func network(_ endpoint: String) -> Self {
-        .init(
-            load: { networkEnvironment in
-                try await get(...)
-            },
-            save: { value, networkEnvironment in 
-                try await post(...)
-            },
-            remove: { networkEnvironment in 
-                try await delete(...)
-            }
-        )
-    }
+	static func network(_ endpoint: String) -> Self {
+		.init(
+			load: { networkEnvironment in
+				try await get(...)
+			},
+			save: { value, networkEnvironment in 
+				try await post(...)
+			},
+			remove: { networkEnvironment in 
+				try await delete(...)
+			}
+		)
+	}
 }
 ```
 
