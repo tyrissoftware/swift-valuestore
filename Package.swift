@@ -14,6 +14,10 @@ let package = Package(
 		.library(
 			name: "ValueStore",
 			targets: ["ValueStore"]
+		),
+		.library(
+			name: "IndexedStore",
+			targets: ["IndexedStore"]
 		)
 	],
 	dependencies: [],
@@ -25,6 +29,14 @@ let package = Package(
 		.testTarget(
 			name: "ValueStoreTests",
 			dependencies: ["ValueStore"]
+		),
+		.target(
+			name: "IndexedStore",
+			dependencies: [ "ValueStore" ]
+		),
+		.testTarget(
+			name: "IndexedStoreTests",
+			dependencies: ["IndexedStore"]
 		)
 	]
 )
