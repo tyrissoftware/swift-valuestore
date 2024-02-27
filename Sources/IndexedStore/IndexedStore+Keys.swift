@@ -5,7 +5,7 @@ import ValueStore
 extension IndexedStore {
 	public func pullbackKey<NewKey>(
 		_ f: @escaping (NewKey) -> Key
-	) -> IndexedStore<NewKey, Environment, Value> {
+	) -> IndexedStore<Environment, NewKey, Value> {
 		.init { newKey, environment in
 			try await self.load(f(newKey), environment)
 		} save: { newKey, value, environment in
