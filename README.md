@@ -115,17 +115,17 @@ Check the documentation or the tests for a better understanding on how to use it
 
 The documentation can be found in the "Documentation" folder.
 
-- [**Codec**](Documentation/Codec.md): This page will explain you how the codec works, used for the transformation between the aplication typed value and the stored format value.
+- [**Codec**](Documentation/Codec.md): This page will explain how codecs work, which are used for failable value transformations.
 
-- [**Constructors**](Documentation/Constructors.md): A more detailed explanation about how to construct diferent kind of ValueStores.
+- [**Constructors**](Documentation/Constructors.md): Lists some options for simple implementations of ValueStore. 
 
-- [**Files**](Documentation/Constructors.md): You can store the data into a file instead of at UsersDefault.
+- [**Files**](Documentation/Files.md): ValueStore provides some file implementations.
 
-- [**User Defaults**](Documentation/UserDefaults.md): You can store the data into a file instead of at UsersDefault.
+- [**User Defaults**](Documentation/UserDefaults.md): How to use ValueStore with UserDefaults.
 
-- [**Utilities**](Documentation/Utilities.md): A bunch of methods useful to handle your ValueStores.
+- [**Utilities**](Documentation/Utilities.md): A bunch of utility methods for your ValueStores.
 
-- [**Testing**](Documentation/Testing.md): Good practices to test instances that requieres ValueStores.
+- [**Reference**](Documentation/Reference.md): The Reference type can be used to store values in memory.
 
 ### Code examples
 
