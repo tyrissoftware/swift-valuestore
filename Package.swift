@@ -18,6 +18,10 @@ let package = Package(
 		.library(
 			name: "IndexedStore",
 			targets: ["IndexedStore"]
+		),
+		.library(
+			name: "KeyIterableStore",
+			targets: ["KeyIterableStore"]
 		)
 	],
 	dependencies: [],
@@ -37,6 +41,14 @@ let package = Package(
 		.testTarget(
 			name: "IndexedStoreTests",
 			dependencies: ["IndexedStore"]
+		),
+		.target(
+			name: "KeyIterableStore",
+			dependencies: [ "ValueStore", "IndexedStore" ]
+		),
+		.testTarget(
+			name: "KeyIterableStoreTests",
+			dependencies: ["KeyIterableStore"]
 		)
 	]
 )

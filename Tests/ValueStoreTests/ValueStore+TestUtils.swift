@@ -13,8 +13,7 @@ extension ValueStore where Value: Equatable {
 		do {
 			let loaded = try await self.load(environment)
 			XCTFail("Value should be removed. \(loaded) found instead")
-		}
-		catch {
+		} catch {
 		}
 	}
 }

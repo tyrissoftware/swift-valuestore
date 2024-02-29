@@ -32,12 +32,14 @@ extension Reference {
 	public func indexedStore<Key: Hashable, StoreValue>() -> IndexedStore<Void, Key, StoreValue>
 	where Value == Dictionary<Key, StoreValue> {
 		.init { key in
+			self.value = self.value ?? [:]
 			guard let value = self.value?[key] else {
 				throw ValueStoreError.noData
 			}
 			
 			return value
 		} save: { key, value in
+			self.value = self.value ?? [:]
 			guard var dic = self.value else {
 				throw ValueStoreError.noData
 			}
@@ -45,6 +47,7 @@ extension Reference {
 			self.value = dic
 			return value
 		} remove: { key in
+			self.value = self.value ?? [:]
 			self.value?[key] = nil
 		}
 	}
