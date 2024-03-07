@@ -33,13 +33,13 @@ extension KeyIterableStore {
 }
 
 extension Reference {
-	public func keyIterableStore<Key: Hashable, StoreValue>() -> KeyIterableStore<Void, Key, StoreValue>
+	public func keyIterableStore<Key: Hashable & Comparable, StoreValue>() -> KeyIterableStore<Void, Key, StoreValue>
 	where Value == Dictionary<Key, StoreValue> {
 		.init(
 			indexed: self.indexedStore()
 		) {
 			self.value = self.value ?? [:]
-			return self.value?.keys.map { $0 } ?? []
+			return self.value?.keys.map { $0 }.sorted(by: { $0 < $1 }) ?? []
 		}
 	}
 }
