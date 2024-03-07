@@ -26,6 +26,26 @@ extension IndexedStore {
 			throw(error)
 		}
 	}
+	
+	public func replacing(
+		_ oldStore: IndexedStore<Environment, Key, Value>
+	) -> Self {
+		.init { key, environment in
+			do {
+				let result = try await self.load(key, environment)
+				try? await oldStore.remove(key, environment)
+				return result
+			}
+			catch {
+				return try await oldStore.move(key: key, to: self, environment: environment)
+			}
+		} save: { key, value, environment in
+			try await self.save(key, value, environment)
+		} remove: { key, environment in
+			try await self.remove(key, environment)
+			try? await oldStore.remove(key, environment)
+		}
+	}
 }
 
 extension Reference {

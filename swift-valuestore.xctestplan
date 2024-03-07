@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "5303F4F2-DD63-4CE3-A888-47DA2875890C",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "ValueStoreTests",
+        "name" : "ValueStoreTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "IndexedStoreTests",
+        "name" : "IndexedStoreTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "KeyIterableStoreTests",
+        "name" : "KeyIterableStoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}
