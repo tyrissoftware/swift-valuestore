@@ -20,6 +20,16 @@ extension KeyIterableStore {
 			allKeys: { [] }
 		)
 	}
+	
+	
+	public func replacing(
+		_ oldStore: KeyIterableStore<Environment, Key, Value>
+	) -> Self {
+		.init(
+			indexed: self.indexed.replacing(oldStore.indexed),
+			allKeys: self.allKeys
+		)
+	}
 }
 
 extension Reference {

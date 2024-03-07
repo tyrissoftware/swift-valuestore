@@ -71,3 +71,15 @@ extension KeyIterableStore where Environment == Void {
 		try await self.clear(environment: ())
 	}
 }
+
+extension KeyIterableStore {
+	@inlinable public func process<NewValue>(
+		preprocess: @escaping (NewValue) async throws -> Value,
+		postprocess: @escaping (Value) async throws -> NewValue
+	) -> KeyIterableStore<Environment, Key, NewValue> {
+		.init(
+			indexed: self.indexed.process(preprocess: preprocess, postprocess: postprocess),
+			allKeys: self.allKeys
+		)
+	}
+}
