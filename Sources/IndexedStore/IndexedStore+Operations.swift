@@ -2,7 +2,7 @@ import Foundation
 
 extension IndexedStore {
 	public func copy(
-		key: Key,
+		_ key: Key,
 		to target: IndexedStore<Environment, Key, Value>,
 		environment: Environment
 	) async throws -> Value {
@@ -11,12 +11,12 @@ extension IndexedStore {
 	}
 	
 	public func move(
-		key: Key,
+		_ key: Key,
 		to target: IndexedStore<Environment, Key, Value>,
 		environment: Environment
 	) async throws -> Value {
 		let result = try await self.copy(
-			key: key,
+			key,
 			to: target,
 			environment: environment
 		)
@@ -29,22 +29,22 @@ extension IndexedStore {
 
 extension IndexedStore where Environment == Void {
 	public func copy(
-		key: Key,
+		_ key: Key,
 		to target: IndexedStore<Void, Key, Value>
 	) async throws -> Value {
 		try await self.copy(
-			key: key,
+			key,
 			to: target,
 			environment: ()
 		)
 	}
 	
 	public func move(
-		key: Key,
+		_ key: Key,
 		to target: IndexedStore<Void, Key, Value>
 	) async throws -> Value {
 		try await self.move(
-			key: key,
+			key,
 			to: target,
 			environment: ()
 		)

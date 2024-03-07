@@ -37,7 +37,7 @@ extension IndexedStore {
 				return result
 			}
 			catch {
-				return try await oldStore.move(key: key, to: self, environment: environment)
+				return try await oldStore.move(key, to: self, environment: environment)
 			}
 		} save: { key, value, environment in
 			try await self.save(key, value, environment)
