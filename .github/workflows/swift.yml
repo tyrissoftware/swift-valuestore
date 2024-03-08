@@ -27,7 +27,7 @@ jobs:
       - name: Build
         run: swift build
       - name: Run tests
-        run: xcodebuild test -scheme swift-valuestore -testPlan "swift-valuestore.xctestplan" -destination "${{ matrix.destination }}"
+        run: xcodebuild test -scheme swift-valuestore -destination "${{ matrix.destination }}"
 
   test-ubuntu:
     runs-on: ubuntu-latest
