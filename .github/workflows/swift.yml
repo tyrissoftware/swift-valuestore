@@ -11,11 +11,10 @@ on:
 
 jobs:
   test:
-    name: Swift ${{ matrix.swift }} on ${{ matrix.os }}
+    name: Swift ${{ matrix.swift }} on macos
     strategy:
       matrix:
         swift: [ "5.8", "5.9" ]
-        destination: [platform=iOS Simulator,OS=14.5,name=iPhone 12,platform=tvOS Simulator,OS=14.5,name=Apple TV,platform=watchOS Simulator,OS=7.4,name=Apple Watch Series 6 - 44mm]
         
     runs-on: macos-latest
 
@@ -27,7 +26,7 @@ jobs:
       - name: Build
         run: swift build
       - name: Run tests
-        run: xcodebuild test -scheme swift-valuestore -destination "${{ matrix.destination }}"
+        run: swift test
 
   test-ubuntu:
     runs-on: ubuntu-latest
