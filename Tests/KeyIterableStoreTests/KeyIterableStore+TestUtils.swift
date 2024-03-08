@@ -6,7 +6,7 @@ extension KeyIterableStore where Value: Equatable {
 	func testCycle(_ key: Key, value: Value, environment: Environment) async throws {
 		let saved = try await self.save(key, value, environment)
 		
-		XCTAssert(self.allKeys().contains(key))
+		XCTAssert(self.allKeys().contains(key), "allKeys does not contain the specified key after saving")
 		
 		let loaded = try await self.load(key, environment)
 		
