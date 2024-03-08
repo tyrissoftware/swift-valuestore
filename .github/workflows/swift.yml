@@ -22,10 +22,23 @@ jobs:
       - uses: actions/checkout@v4
         with:
           swift-version: ${{ matrix.swift }}
+      
       - name: Build
         run: swift build
+      
       - name: Run tests
-        run: swift test
+        run: swift test --enable-code-coverage
+
+      - name: Generate coverage
+        uses: maxep/spm-lcov-action@0.3.1
+        with:
+          output-file: ./coverage/lcov.info
+
+      - name: Report coverage
+        uses: romeovs/lcov-reporter-action@v0.2.16
+        with:
+          lcov-file: ./coverage/lcov.info
+
 
   test-ubuntu:
     runs-on: ubuntu-latest
@@ -42,4 +55,6 @@ jobs:
         export PATH="/tmp/usr/bin:$PATH"
 
     - name: Build and Run Ubuntu Tests
-      run: swift test
+      run: swift test --enable-code-coverage
+
+        
