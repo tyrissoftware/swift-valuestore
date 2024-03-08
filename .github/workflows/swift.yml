@@ -20,14 +20,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          swift-version: ${{ matrix.swift }}
       
       - name: Build
         run: swift build
+        with:
+          swift-version: ${{ matrix.swift }}
       
       - name: Run tests
         run: swift test --enable-code-coverage
+        with:
+          swift-version: ${{ matrix.swift }}
 
   test-ubuntu:
     runs-on: ubuntu-latest
