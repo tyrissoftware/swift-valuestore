@@ -3,11 +3,12 @@ import XCTest
 
 import ValueStore
 import IndexedStore
+import KeyIterableStore
 
 class KeyIterableStoreCreationTests: XCTestCase {
 	func testConst() async throws {
 		let key = "key"
-		let store = IndexedStore<Void, String, Int>.const(42)
+		let store = KeyIterableStore<Void, String, Int>.const(42)
 		
 		let loaded = try await store.load(key)
 		XCTAssertEqual(loaded, 42)
@@ -28,7 +29,7 @@ class KeyIterableStoreCreationTests: XCTestCase {
 	}
 	
 	func testError() async throws {
-		let store = IndexedStore<Void, String, Int>.error(ValueStoreError.noData)
+		let store = KeyIterableStore<Void, String, Int>.error(ValueStoreError.noData)
 		
 		do {
 			let loaded = try await store.load("key")
@@ -102,5 +103,43 @@ class KeyIterableStoreCreationTests: XCTestCase {
 
 		let afterRemove = try? await store.load(key)
 		XCTAssertEqual(afterRemove, nil)
+	}
+	
+	func testCreateEnvironment() async throws {
+		let key = "key"
+
+		let ref = Reference<[String: Int]>([key: 7])
+
+		let store = KeyIterableStore<Void, String, Int> { key, environment in
+			try isPresent(ref.value?[key], or: ValueStoreError.noData)
+		} save: { key, value, environment in
+			ref.value?[key] = value
+			return value
+		} remove: { key, environment in
+			ref.value?[key] = nil
+		} allKeys: {
+			ref.value?.keys.map { $0 } ?? []
+		}
+
+		try await store.testCycle(key, value: 7)
+	}
+	
+	func testCreateVoidEnvironment() async throws {
+		let key = "key"
+
+		let ref = Reference<[String: Int]>([key: 7])
+
+		let store = KeyIterableStore { key in
+			try isPresent(ref.value?[key], or: ValueStoreError.noData)
+		} save: { key, value in
+			ref.value?[key] = value
+			return value
+		} remove: { key in
+			ref.value?[key] = nil
+		} allKeys: {
+			ref.value?.keys.map { $0 } ?? []
+		}
+
+		try await store.testCycle(key, value: 7)
 	}
 }
