@@ -36,10 +36,12 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Setup Swift
-      uses: actions/setup-swift@v2
-      with:
-        swift-version: '5.5'
+    - name: Install Swift
+      run: |
+        wget -q -O - https://swift.org/keys/all-keys.asc | gpg --import -
+        wget https://swift.org/builds/swift-5.5.3-release/ubuntu2004/swift-5.5.3-RELEASE/swift-5.5.3-RELEASE-ubuntu20.04.tar.gz
+        tar xzf swift-5.5.3-RELEASE-ubuntu20.04.tar.gz --directory /tmp --strip-components=1
+        export PATH="/tmp/usr/bin:$PATH"
 
     - name: Build and Run Ubuntu Tests
       run: swift test
