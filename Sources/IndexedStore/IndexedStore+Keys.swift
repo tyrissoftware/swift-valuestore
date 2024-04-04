@@ -26,4 +26,8 @@ extension IndexedStore {
 			try await self.remove(key, environment)
 		}
 	}
+	
+	public subscript(key: Key) -> ValueStore<Environment, Value> {
+		self.valueStore(key: key)
+	}
 }

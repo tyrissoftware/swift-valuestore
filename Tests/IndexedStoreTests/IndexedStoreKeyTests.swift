@@ -50,4 +50,25 @@ class IndexedStoreKeyTests: XCTestCase {
 		
 		XCTAssertEqual(ref.value?[key1], 6)
 	}
+	
+	@MainActor
+	func testSubscript() async throws {
+		let key1 = "key1"
+		let key2 = "key2"
+		
+		let ref = Reference<[String: Int]>(
+			[
+				key1: 1,
+				key2: 2
+			]
+		)
+		
+		let store = ref.indexedStore()[key1]
+		
+		try await store.testCycle(5)
+		
+		_ = try await store.save(6)
+		
+		XCTAssertEqual(ref.value?[key1], 6)
+	}
 }
