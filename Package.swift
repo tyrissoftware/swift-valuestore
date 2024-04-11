@@ -20,7 +20,10 @@ let package = Package(
 	targets: [
 		.target(
 			name: "ValueStore",
-			dependencies: []
+			dependencies: [],
+			resources: [
+				.copy("PrivacyInfo.xcprivacy")
+			]
 		),
 		.testTarget(
 			name: "ValueStoreTests",
