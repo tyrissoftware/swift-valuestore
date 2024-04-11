@@ -62,9 +62,9 @@ class ValueStoreCreationTests: XCTestCase {
 	}
 	
 	func testReplacingMove() async throws {
-		let oldRef = Ref<Int?>(7)
+		let oldRef = Reference<Int?>(7)
 		let old = oldRef.valueStore
-		let store = Ref<Int?>().valueStore.replacing(old)
+		let store = Reference<Int?>().valueStore.replacing(old)
 		
 		let fromOld = try await store.load()
 		
@@ -85,9 +85,9 @@ class ValueStoreCreationTests: XCTestCase {
 	}
 	
 	func testReplacingRemove() async throws {
-		let oldRef = Ref<Int?>(7)
+		let oldRef = Reference<Int?>(7)
 		let old = oldRef.valueStore
-		let store = Ref<Int?>().valueStore.replacing(old)
+		let store = Reference<Int?>().valueStore.replacing(old)
 		
 		try await store.remove()
 		XCTAssertEqual(oldRef.value, nil)
