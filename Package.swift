@@ -14,6 +14,10 @@ let package = Package(
 		.library(
 			name: "ValueStore",
 			targets: ["ValueStore"]
+		),
+		.library(
+			name: "ObservableStore",
+			targets: ["ObservableStore"]
 		)
 	],
 	dependencies: [],
@@ -28,6 +32,15 @@ let package = Package(
 		.testTarget(
 			name: "ValueStoreTests",
 			dependencies: ["ValueStore"]
-		)
+		),
+		.target(
+			name: "ObservableStore",
+			dependencies: [
+				"ValueStore"
+			],
+			resources: [
+				.copy("PrivacyInfo.xcprivacy")
+			]
+		),
 	]
 )

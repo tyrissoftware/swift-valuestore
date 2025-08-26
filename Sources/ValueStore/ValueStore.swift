@@ -5,7 +5,7 @@ public enum ValueStoreError: Error {
 	case encoding(Error)
 }
 
-public struct ValueStore<Environment, Value> {
+public struct ValueStore<Environment, Value>: Sendable {
 	public var load: (Environment) async throws -> Value
 	public var save: (Value, Environment) async throws -> Value
 	public var remove: (Environment) async throws -> Void
